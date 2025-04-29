@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Game Engine | JS/Kotlin</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Toast Notification CSS -->
+  <style>
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      z-index: 1000;
+      color: white;
+    }
+    .toast-success { background: #00C851; }
+    .toast-error { background: #ff4444; }
+    .toast-warning { background: #ffbb33; color: black; }
+  </style>
 </head>
 <body>
   <header>
@@ -23,7 +38,11 @@
         </select>
       </div>
       
-      <textarea id="codeInput" placeholder="function update() { ... }"></textarea>
+      <textarea 
+        id="codeInput" 
+        placeholder="function update() { ... }"
+        spellcheck="false"
+      ></textarea>
       
       <div class="button-group">
         <button onclick="saveCode()" class="btn">💾 محفوظ کریں</button>
@@ -34,7 +53,11 @@
 
     <!-- پریویو سیکشن -->
     <section class="preview-section">
-      <iframe id="previewFrame" sandbox="allow-scripts"></iframe>
+      <iframe 
+        id="previewFrame" 
+        sandbox="allow-scripts allow-same-origin"
+        style="width: 100%; height: 600px; border: 2px solid #333; background: white;"
+      ></iframe>
     </section>
   </main>
 
