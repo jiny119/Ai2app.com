@@ -1,127 +1,144 @@
+// -- Data & IDs --
 let objects = [];
+let nextId = 1;
 let selectedObject = null;
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
 
-canvas.addEventListener('mousedown', selectObject);
-canvas.addEventListener('mousemove', moveObject);
-canvas.addEventListener('mouseup', () => selectedObject = null);
+const canvas      = document.getElementById('gameCanvas');
+const ctx         = canvas.getContext('2d');
+const treeList    = document.getElementById('sceneTreeList');
+const inspector   = document.getElementById('inspectorProperties');
+const modal       = document.getElementById('addNodeModal');
+const typeSelect  = document.getElementById('nodeTypeSelect');
 
-// Drawing objects on canvas
+// -- Init on load --
+window.addEventListener('load', () => {
+  newProject();
+  canvas.addEventListener('mousedown', pickObject);
+  canvas.addEventListener('mousemove', dragObject);
+  canvas.addEventListener('mouseup', () => selectedObject = null);
+});
+
+// -- DRAW ALL OBJECTS --
 function drawObjects() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    objects.forEach(obj => {
-        ctx.save();
-        ctx.translate(obj.x, obj.y);
-        ctx.rotate(obj.rotation || 0);
-        if (obj.type === 'rectangle') {
-            ctx.fillStyle = obj.color;
-            ctx.fillRect(-obj.width/2, -obj.height/2, obj.width, obj.height);
-        } else if (obj.type === 'circle') {
-            ctx.fillStyle = obj.color;
-            ctx.beginPath();
-            ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
-            ctx.fill();
-        } else if (obj.type === 'text') {
-            ctx.fillStyle = obj.color;
-            ctx.font = `${obj.size}px Arial`;
-            ctx.fillText(obj.text, -obj.width/2, obj.height/2);
-        } else if (obj.type === 'image' && obj.img) {
-            ctx.drawImage(obj.img, -obj.width/2, -obj.height/2, obj.width, obj.height);
-        }
-        ctx.restore();
-    });
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  objects.forEach(o => {
+    ctx.save();
+    ctx.translate(o.x, o.y);
+    if (o.type === 'rectangle') {
+      ctx.fillStyle = o.color; ctx.fillRect(-o.w/2, -o.h/2, o.w, o.h);
+    }
+    if (o.type === 'circle') {
+      ctx.fillStyle = o.color; ctx.beginPath();
+      ctx.arc(0, 0, o.r, 0, 2*Math.PI); ctx.fill();
+    }
+    if (o.type === 'text') {
+      ctx.fillStyle = o.color; ctx.font = o.size + 'px sans-serif';
+      ctx.fillText(o.text, -o.textWidth/2, o.size/2);
+    }
+    ctx.restore();
+  });
 }
 
-// Add Rectangle, Circle, Text etc.
-function addNode() {
-    document.getElementById('addNodeModal').style.display = 'flex';
+// -- SCENE TREE UI --
+function updateSceneTree() {
+  treeList.innerHTML = '';
+  objects.forEach(o => {
+    const li = document.createElement('li');
+    li.textContent = `${o.type} #${o.id}`;
+    li.onclick = () => selectObjectById(o.id);
+    treeList.appendChild(li);
+  });
 }
 
+// -- SELECT & INSPECT --
+function selectObjectById(id) {
+  selectedObject = objects.find(o => o.id === id);
+  showInspector();
+}
+function pickObject(e) {
+  const rect = canvas.getBoundingClientRect(),
+        x = e.clientX - rect.left,
+        y = e.clientY - rect.top;
+  selectedObject = objects.find(o => {
+    if (o.type === 'rectangle')
+      return x > o.x - o.w/2 && x < o.x + o.w/2 &&
+             y > o.y - o.h/2 && y < o.y + o.h/2;
+    if (o.type === 'circle')
+      return Math.hypot(o.x - x, o.y - y) < o.r;
+    if (o.type === 'text')
+      return x > o.x - o.textWidth/2 && x < o.x + o.textWidth/2 &&
+             y > o.y - o.size && y < o.y + 4;
+  });
+  showInspector();
+}
+function dragObject(e) {
+  if (!selectedObject) return;
+  const rect = canvas.getBoundingClientRect();
+  selectedObject.x = e.clientX - rect.left;
+  selectedObject.y = e.clientY - rect.top;
+  drawObjects();
+}
+
+// -- INSPECTOR PANEL --
+function showInspector() {
+  inspector.innerHTML = '';
+  if (!selectedObject) return;
+  for (let key in selectedObject) {
+    if (['id','textWidth'].includes(key)) continue;
+    const input = document.createElement('input');
+    input.value = selectedObject[key];
+    input.placeholder = key;
+    input.oninput = () => {
+      let val = input.value;
+      if (key !== 'type' && key !== 'text') val = parseFloat(val);
+      selectedObject[key] = val;
+      if (key === 'text') selectedObject.textWidth = ctx.measureText(val).width;
+      drawObjects();
+    };
+    inspector.appendChild(input);
+  }
+}
+
+// -- ADD NODE MODAL --
+function openModal() { modal.style.display = 'flex'; }
+function closeModal() { modal.style.display = 'none'; }
 function confirmAddNode() {
-    const type = document.getElementById('nodeTypeSelect').value;
-    if (type === 'Node2D') {
-        objects.push({ type: 'rectangle', x: 400, y: 300, width: 100, height: 100, color: '#ff4757' });
-    } else if (type === 'Sprite') {
-        // Similar logic for Sprite and others...
-    }
-    drawObjects();
-    closeModal();
+  const type = typeSelect.value;
+  const o = { id: nextId++, type, x:400, y:300 };
+  if (type === 'rectangle') { o.w=100; o.h=60; o.color='#ff4757' }
+  if (type === 'circle')    { o.r=40; o.color='#1e90ff'  }
+  if (type === 'text')      { o.text='Hello'; o.size=24;
+                             ctx.font='24px sans-serif';
+                             o.textWidth = ctx.measureText(o.text).width;
+                             o.color='#333' }
+  objects.push(o);
+  updateSceneTree();
+  drawObjects();
+  closeModal();
 }
 
-function closeModal() {
-    document.getElementById('addNodeModal').style.display = 'none';
-}
-
-// Select and move objects
-function selectObject(e) {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    selectedObject = objects.find(obj => {
-        if (obj.type === 'rectangle') {
-            return x > obj.x - obj.width/2 && x < obj.x + obj.width/2 && y > obj.y - obj.height/2 && y < obj.y + obj.height/2;
-        }
-    });
-    showInspector(selectedObject);
-}
-
-function moveObject(e) {
-    if (!selectedObject) return;
-    const rect = canvas.getBoundingClientRect();
-    selectedObject.x = e.clientX - rect.left;
-    selectedObject.y = e.clientY - rect.top;
-    drawObjects();
-}
-
-// Inspector for properties
-function showInspector(obj) {
-    const inspector = document.getElementById('inspectorProperties');
-    inspector.innerHTML = '';
-    if (!obj) return;
-    for (let key in obj) {
-        const input = document.createElement('input');
-        input.value = obj[key];
-        input.placeholder = key;
-        input.oninput = () => {
-            obj[key] = isNaN(obj[key]) ? input.value : parseFloat(input.value);
-            drawObjects();
-        };
-        inspector.appendChild(input);
-    }
-}
-
-// Save to LocalStorage
-function saveProject() {
-    localStorage.setItem('gameProject', JSON.stringify(objects));
-    alert('Project Saved!');
-}
-
-// Load from LocalStorage
-function loadProject() {
-    const data = JSON.parse(localStorage.getItem('gameProject'));
-    if (data) {
-        objects = data;
-        drawObjects();
-        alert('Project Loaded!');
-    }
-}
-
-// New Project
+// -- PROJECT LIFECYCLE --
 function newProject() {
-    if (confirm('Are you sure? All unsaved work will be lost.')) {
-        objects = [];
-        drawObjects();
-    }
+  objects = []; nextId = 1;
+  updateSceneTree();
+  drawObjects();
+  closeModal();
 }
-
-// Export project as JSON
+function saveProject() {
+  localStorage.setItem('my2DEngine', JSON.stringify(objects));
+  alert('✔ Project saved locally');
+}
+function loadProject() {
+  const data = JSON.parse(localStorage.getItem('my2DEngine') || '[]');
+  objects = data;
+  nextId = objects.reduce((m,o)=>Math.max(m,o.id),0) + 1;
+  updateSceneTree();
+  drawObjects();
+  alert('✔ Project loaded');
+}
 function exportProject() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(objects));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "game_project.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-              }
+  const str = "data:text/json," + encodeURIComponent(JSON.stringify(objects));
+  const a = document.createElement('a');
+  a.href = str; a.download = 'scene.json';
+  document.body.appendChild(a); a.click(); a.remove();
+                }
