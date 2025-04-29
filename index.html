@@ -8,25 +8,17 @@
 </head>
 <body>
 
-  <!-- ====== Project Manager View ====== -->
-  <div id="projectManager">
-    <h1>Project Manager</h1>
-    <button id="newProjBtn">New Project</button>
-    <h2>Existing Projects</h2>
-    <ul id="projList"></ul>
-  </div>
-
-  <!-- ====== Editor View (Start Hidden) ====== -->
-  <div id="editor" class="hidden">
+  <!-- Project Manager and Editor Views are combined here -->
+  <div id="editor">
     <!-- Top Bar -->
     <div id="topbar">
-      <button onclick="backToManager()">← Back</button>
       <button onclick="newProject()">New</button>
       <button onclick="saveProject()">Save</button>
       <button onclick="loadProject()">Load</button>
       <button onclick="exportProject()">Export JSON</button>
     </div>
 
+    <!-- Main Area -->
     <div id="main">
       <!-- Scene Tree -->
       <div id="sceneTree">
@@ -34,10 +26,12 @@
         <ul id="sceneTreeList"></ul>
         <button onclick="openModal()">+ Add Node</button>
       </div>
-      <!-- Canvas -->
+
+      <!-- Canvas Viewport -->
       <div id="canvasArea">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
       </div>
+
       <!-- Inspector -->
       <div id="inspector">
         <h3>Inspector</h3>
@@ -46,7 +40,7 @@
     </div>
 
     <!-- Add-Node Modal -->
-    <div id="addNodeModal" class="modal hidden">
+    <div id="addNodeModal" class="modal">
       <div class="modal-content">
         <h3>Select Node Type</h3>
         <select id="nodeTypeSelect">
