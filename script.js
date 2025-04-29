@@ -3,9 +3,8 @@ const codeInput = document.getElementById('codeInput');
 const previewFrame = document.getElementById('previewFrame');
 const apkLink = document.getElementById('apkLink');
 const languageSelector = document.getElementById('language');
-const exportWebBtn = document.querySelector('.download-btn:nth-child(2)');
 
-// 1) Save & Load Code with Language Support
+// 1) Save & Load Code with Local Storage
 function saveCode() {
     if (!codeInput.value.trim()) {
         return showToast('❌ کوڈ خالی ہے', 'error');
@@ -23,163 +22,102 @@ function saveCode() {
 
 function loadCode() {
     const savedData = localStorage.getItem('gameEngineCode');
-    if (!savedData) {
-        return showToast('کوئی محفوظ کوڈ نہیں ملا', 'warning');
-    }
+    if (!savedData) return showToast('کوئی محفوظ کوڈ نہیں ملا', 'warning');
 
     try {
         const { code, language } = JSON.parse(savedData);
         codeInput.value = code;
         languageSelector.value = language;
-        codeInput.dispatchEvent(new Event('input')); // Auto-resize on load
+        codeInput.dispatchEvent(new Event('input')); // Auto-resize
         showToast('✔ کوڈ لوڈ ہو گیا', 'success');
     } catch (err) {
         showToast('کوڈ لوڈ کرنے میں خرابی', 'error');
     }
 }
 
-// 2) Enhanced Game Generation
-async function generateGame(event) { // Event parameter added
+// 2) Local Game Generation (بغیر API کے)
+async function generateGame(event) {
     const code = codeInput.value.trim();
-    if (!code) {
-        return showToast('پہلے اپنا کوڈ لکھیں', 'warning');
-    }
+    if (!code) return showToast('پہلے کوڈ لکھیں', 'warning');
 
     const btn = event.target;
     btn.disabled = true;
-    btn.innerHTML = '<i class="icon">⏳</i> Generating...';
+    btn.innerHTML = '<i class="icon">⏳</i> جنریٹ ہو رہا ہے...';
 
     try {
-        // Show loading state in preview
+        // Local Preview بنائیں
         previewFrame.srcdoc = `
             <!DOCTYPE html>
             <html>
             <head>
+                <title>گیم پریویو</title>
                 <style>
                     body { 
                         display: flex;
                         justify-content: center;
                         align-items: center;
                         height: 100vh;
-                        background: #f3f4f6;
-                        font-family: sans-serif;
-                    }
-                    .loader {
-                        text-align: center;
-                    }
-                    .spinner {
-                        border: 5px solid #e5e7eb;
-                        border-top: 5px solid #3b82f6;
-                        border-radius: 50%;
-                        width: 50px;
-                        height: 50px;
-                        animation: spin 1s linear infinite;
-                        margin: 0 auto 20px;
-                    }
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
+                        background: #1a1a1a;
+                        color: white;
                     }
                 </style>
             </head>
             <body>
-                <div class="loader">
-                    <div class="spinner"></div>
-                    <h2>گیم جنریٹ ہو رہی ہے...</h2>
-                    <p>براہ کرم انتظار کریں</p>
-                </div>
+                <h1>گیم چل رہی ہے! 🎮</h1>
+                <script>${code}<\/script>
             </body>
             </html>
         `;
 
-        const response = await fetch('https://your-api-domain.com/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                code,
-                language: languageSelector.value 
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`API error: ${response.status} - ${response.statusText || 'Unknown error'}`);
-        }
-
-        const data = await response.json();
-        
-        // Update preview and download links
-        previewFrame.src = data.previewUrl || '';
-        apkLink.href = data.apkUrl || '#';
-        
-        if (data.webUrl) {
-            exportWebBtn.href = data.webUrl;
-            exportWebBtn.style.display = 'inline-flex';
-        }
-
-        showToast('✔ گیم جنریٹ ہو گئی!', 'success');
+        showToast('✔ گیم تیار ہو گئی!', 'success');
     } catch (err) {
-        console.error('Generation error:', err);
-        showToast('❌ جنریشن ناکام ہوئی', 'error');
-        
-        // Show error in preview
-        previewFrame.srcdoc = `
-            <!DOCTYPE html>
-            <html>
-            <body style="
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                font-family: sans-serif;
-                color: #ef4444;
-                text-align: center;
-            ">
-                <div>
-                    <h2>خرابی: گیم جنریٹ نہیں ہو سکی</h2>
-                    <p>${err.message || 'نامعلوم خرابی'}</p>
-                </div>
-            </body>
-            </html>
-        `;
+        showToast('❌ جنریشن ناکام: ' + err.message, 'error');
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="icon">✨</i> Generate Game';
+        btn.innerHTML = '<i class="icon">✨</i> گیم بنائیں';
     }
 }
 
-// 3) Export Web Version (Complete Implementation)
+// 3) Export Web Version
 async function exportWeb() {
-    if (!previewFrame.src && !previewFrame.srcdoc) {
-        return showToast('پہلے گیم جنریٹ کریں', 'warning');
-    }
+    const code = codeInput.value.trim();
+    if (!code) return showToast('پہلے کوڈ لکھیں', 'warning');
 
     try {
-        const timestamp = new Date().getTime();
         const htmlContent = `
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Exported Game</title>
-                <script>${codeInput.value}<\/script>
+                <title>آپ کی گیم</title>
+                <style>
+                    body { 
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background: #1a1a1a;
+                        color: white;
+                    }
+                </style>
             </head>
             <body>
-                <h1>آپ کی گیم یہاں چل رہی ہے!</h1>
+                <h1>خوش آمدید! 🚀</h1>
+                <script>${code}<\/script>
             </body>
             </html>
         `;
 
-        // Download as HTML فائل
         const blob = new Blob([htmlContent], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `game_${timestamp}.html`;
+        a.download = `game_${Date.now()}.html`;
         a.click();
         
-        showToast('✔ ویب فائل ڈاؤن لوڈ ہو گئی', 'success');
+        showToast('✔ HTML فائل ڈاؤن لوڈ ہو گئی', 'success');
     } catch (err) {
-        showToast('❌ ایکسپورٹ ناکام ہوا', 'error');
+        showToast('❌ ڈاؤن لوڈ ناکام', 'error');
     }
 }
 
@@ -201,27 +139,22 @@ function setupCodeEditor() {
     // Auto-resize textarea
     codeInput.addEventListener('input', function() {
         this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
+        this.style.height = this.scrollHeight + 'px';
     });
 
-    // Language-specific syntax hints
+    // Language-specific placeholders
     languageSelector.addEventListener('change', function() {
-        const placeholder = {
-            'kotlin': 'fun main() {\n    // Your Kotlin game code\n}',
-            'javascript': 'function startGame() {\n    // Your JS game code\n}',
-            'nodejs': 'const game = require(\'game-module\');\n\n// Your Node.js game code'
-        }[this.value];
-        
-        codeInput.placeholder = placeholder || 'اپنا کوڈ یہاں لکھیں...';
+        const placeholders = {
+            'kotlin': 'fun main() {\n    // کوٹلن کوڈ یہاں لکھیں\n}',
+            'javascript': 'function startGame() {\n    // جاوا اسکرپٹ کوڈ یہاں لکھیں\n}',
+            'nodejs': 'const game = require(\'game\');\n\n// نوڈ جے ایس کوڈ یہاں لکھیں'
+        };
+        codeInput.placeholder = placeholders[this.value] || 'اپنا کوڈ یہاں لکھیں...';
     });
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     setupCodeEditor();
-    
-    // Load any saved code on startup
-    if (localStorage.getItem('gameEngineCode')) {
-        loadCode();
-    }
+    if (localStorage.getItem('gameEngineCode')) loadCode();
 });
