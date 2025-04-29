@@ -52,19 +52,26 @@ async function generateGame(event) {
       <head>
         <title>گیم پریویو</title>
         <style>
-          body { 
+          body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background: #1a1a1a;
             color: white;
+            margin: 0;
           }
         </style>
       </head>
       <body>
         <h1>گیم چل رہی ہے! 🎮</h1>
-        <script>${code}<\/script>
+        <script>
+          try {
+            ${code}
+          } catch (err) {
+            console.error("Error running the game:", err);
+          }
+        </script>
       </body>
       </html>
     `;
@@ -90,7 +97,7 @@ async function exportWeb() {
       <head>
         <title>آپ کی گیم</title>
         <style>
-          body { 
+          body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -102,7 +109,9 @@ async function exportWeb() {
       </head>
       <body>
         <h1>خوش آمدید! 🚀</h1>
-        <script>${code}<\/script>
+        <script>
+          ${code}
+        </script>
       </body>
       </html>
     `;
@@ -166,6 +175,7 @@ function setupCodeEditor() {
       'nodejs': 'const game = require(\'game\');\n\n// نوڈ جے ایس کوڈ یہاں لکھیں'
     };
     codeInput.placeholder = placeholders[this.value] || 'اپنا کوڈ یہاں لکھیں...';
+
   });
 }
 
@@ -174,3 +184,4 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCodeEditor();
   if (localStorage.getItem('gameEngineCode')) loadCode();
 });
+                  
