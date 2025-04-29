@@ -174,4 +174,3 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCodeEditor();
   if (localStorage.getItem('gameEngineCode')) loadCode();
 });
-      
