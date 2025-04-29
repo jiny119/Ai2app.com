@@ -2,55 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dream 2D Game Engine</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>2D Engine (Godot-Style)</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Bar for Tools -->
+  <!-- Top Bar -->
   <div id="topbar">
     <button onclick="newProject()">New</button>
     <button onclick="saveProject()">Save</button>
     <button onclick="loadProject()">Load</button>
-    <button onclick="exportProject()">Export</button>
+    <button onclick="exportProject()">Export JSON</button>
   </div>
 
-  <!-- Main Content Area -->
+  <!-- Main Layout -->
   <div id="main">
-    <!-- Left Sidebar for Scene Tree -->
-    <div id="leftbar">
+    <!-- Scene Tree -->
+    <div id="sceneTree">
       <h3>Scene Tree</h3>
       <ul id="sceneTreeList"></ul>
-      <button onclick="addNode()">+ Add Node</button>
+      <button id="addNodeBtn" onclick="openModal()">+ Add Node</button>
     </div>
 
-    <!-- Center Viewport (Canvas) -->
+    <!-- Canvas Viewport -->
     <div id="canvasArea">
-      <canvas id="gameCanvas" width="1000" height="600"></canvas>
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
     </div>
 
-    <!-- Right Sidebar for Inspector -->
-    <div id="rightbar">
+    <!-- Inspector -->
+    <div id="inspector">
       <h3>Inspector</h3>
       <div id="inspectorProperties"></div>
     </div>
   </div>
 
-  <!-- Node Add Modal -->
+  <!-- Add-Node Modal -->
   <div id="addNodeModal" class="modal">
     <div class="modal-content">
       <h3>Select Node Type</h3>
       <select id="nodeTypeSelect">
-        <option value="Node2D">Node2D</option>
-        <option value="Sprite">Sprite</option>
-        <option value="TextLabel">TextLabel</option>
-        <option value="Button">Button</option>
-        <option value="Rectangle">Rectangle</option>
-        <option value="Circle">Circle</option>
+        <option>Rectangle</option>
+        <option>Circle</option>
+        <option>Text</option>
       </select>
-      <button onclick="confirmAddNode()">Add</button>
-      <button onclick="closeModal()">Cancel</button>
+      <div class="modal-buttons">
+        <button onclick="confirmAddNode()">Add</button>
+        <button onclick="closeModal()">Cancel</button>
+      </div>
     </div>
   </div>
 
