@@ -36,7 +36,7 @@
         <button onclick="loadCode()" class="btn load-btn">
           <i class="icon">📂</i> Load Code
         </button>
-        <button onclick="generateGame(event)" class="btn generate-btn"> <!-- Event added -->
+        <button onclick="generateGame(event)" class="btn generate-btn">
           <i class="icon">✨</i> Generate Game
         </button>
       </div>
@@ -46,7 +46,7 @@
     <section class="preview-section">
       <h2>Live Preview</h2>
       <div class="preview-container">
-        <iframe id="previewFrame" sandbox="allow-scripts" title="Game Preview"></iframe>
+        <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin" title="Game Preview"></iframe>
       </div>
       
       <div class="download-section">
@@ -69,4 +69,4 @@
 
   <script src="script.js"></script>
 </body>
-  </html>
+</html>
