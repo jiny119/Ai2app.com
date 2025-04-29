@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Game Engine | JS/Kotlin</title>
+  <title>AI Game Engine</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Toast Notification CSS -->
   <style>
+    /* Toast Notifications */
     .toast {
       position: fixed;
       bottom: 20px;
@@ -15,48 +15,35 @@
       border-radius: 8px;
       z-index: 1000;
       color: white;
+      animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
     }
-    .toast-success { background: #00C851; }
-    .toast-error { background: #ff4444; }
-    .toast-warning { background: #ffbb33; color: black; }
+    .toast-success { background: #28a745; }
+    .toast-error { background: #dc3545; }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
   </style>
 </head>
 <body>
   <header>
     <h1>AI Game Engine</h1>
-    <p class="subtitle">Build games using JavaScript/Kotlin</p>
+    <p class="subtitle">JavaScript/Kotlin Games</p>
   </header>
 
   <main>
-    <!-- کوڈ ایڈیٹر -->
     <section class="editor-section">
-      <div class="language-selector">
-        <label for="language">زبان:</label>
-        <select id="language">
-          <option value="javascript">JavaScript</option>
-          <option value="kotlin">Kotlin</option>
-        </select>
-      </div>
-      
-      <textarea 
-        id="codeInput" 
-        placeholder="function update() { ... }"
-        spellcheck="false"
-      ></textarea>
-      
+      <textarea id="codeInput" placeholder="// اپنا کوڈ یہاں لکھیں"></textarea>
       <div class="button-group">
-        <button onclick="saveCode()" class="btn">💾 محفوظ کریں</button>
-        <button onclick="generateGame(event)" class="btn">🎮 گیم بنائیں</button>
-        <button onclick="exportAPK()" class="btn">📱 APK ڈاؤن لوڈ</button>
+        <button onclick="saveCode()">💾 Save</button>
+        <button onclick="generateGame()">🚀 Generate</button>
       </div>
     </section>
 
-    <!-- پریویو سیکشن -->
+    <!-- یہاں پر iframe کا سینڈ باکس ضرور چیک کریں -->
     <section class="preview-section">
       <iframe 
-        id="previewFrame" 
-        sandbox="allow-scripts allow-same-origin"
-        style="width: 100%; height: 600px; border: 2px solid #333; background: white;"
+        id="previewFrame"
+        sandbox="allow-scripts allow-same-origin" <!-- یہ لائن بالکل ایسی ہی ہونی چاہیے -->
+        style="width:100%; height:600px; border:none;"
       ></iframe>
     </section>
   </main>
