@@ -2,32 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI Game Engine Frontend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-powered game development engine supporting Kotlin, JavaScript and Node.js">
+  <title>AI Game Engine | Kotlin/JS/Node.js</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
+  <header>
+    <h1>AI-Driven Game Engine</h1>
+    <p class="subtitle">Build games using Kotlin, JavaScript or Node.js with AI assistance</p>
+  </header>
 
-  <h1>AI-Driven Game Engine</h1>
+  <main>
+    <!-- Code Editor Section -->
+    <section class="editor-section">
+      <div class="language-selector">
+        <label for="language">زبان منتخب کریں:</label>
+        <select id="language">
+          <option value="kotlin">Kotlin</option>
+          <option value="javascript">JavaScript</option>
+          <option value="nodejs">Node.js</option>
+        </select>
+      </div>
+      
+      <label for="codeInput">اپنا کوڈ لکھیں:</label>
+      <textarea id="codeInput" placeholder="function startGame() { ... }" spellcheck="false"></textarea>
+      
+      <div class="button-group">
+        <button onclick="saveCode()" class="btn save-btn">
+          <i class="icon">💾</i> Save Code
+        </button>
+        <button onclick="loadCode()" class="btn load-btn">
+          <i class="icon">📂</i> Load Code
+        </button>
+        <button onclick="generateGame()" class="btn generate-btn">
+          <i class="icon">✨</i> Generate Game
+        </button>
+      </div>
+    </section>
 
-  <!-- Code Editor -->
-  <label for="codeInput">اپنا کوڈ لکھیں (Kotlin/JS/Node):</label>
-  <textarea id="codeInput" placeholder="function startGame() { ... }"></textarea>
+    <!-- Preview Section -->
+    <section class="preview-section">
+      <h2>Live Preview</h2>
+      <div class="preview-container">
+        <iframe id="previewFrame" sandbox="allow-scripts" title="Game Preview"></iframe>
+      </div>
+      
+      <div class="download-section">
+        <h2>Download</h2>
+        <div class="download-options">
+          <a id="apkLink" href="#" download class="download-btn">
+            <i class="icon">📱</i> APK ڈاؤن لوڈ کریں
+          </a>
+          <button onclick="exportWeb()" class="download-btn">
+            <i class="icon">🌐</i> Web Version
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  <!-- Buttons -->
-  <div class="buttons">
-    <button onclick="saveCode()">Save Code</button>
-    <button onclick="loadCode()">Load Code</button>
-    <button onclick="generateGame()">Generate Game</button>
-  </div>
-
-  <!-- Preview & APK Link -->
-  <div id="result">
-    <h2>Live Preview</h2>
-    <iframe id="previewFrame" sandbox="allow-scripts"></iframe>
-    <h2>Download APK</h2>
-    <a id="apkLink" href="#" download>APK ڈاؤن لوڈ کریں</a>
-  </div>
+  <footer>
+    <p>© 2023 AI Game Engine | <a href="/docs">Documentation</a> | <a href="/examples">Examples</a></p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
