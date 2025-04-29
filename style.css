@@ -1,0 +1,88 @@
+/* Resetting default margin, padding, and box-sizing for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Styling the Top Bar */
+#topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #3b99d4;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+#topbar button {
+    background-color: #4e89c7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+#topbar button:hover {
+    background-color: #6a9dcf;
+}
+
+/* Main content layout */
+#main {
+    display: flex;
+    margin-top: 60px;
+    height: calc(100vh - 60px);
+}
+
+#leftbar, #rightbar {
+    background-color: #2d4059;
+    width: 200px;
+    padding: 20px;
+    overflow-y: auto;
+    color: white;
+}
+
+#canvasArea {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    background: #f0f0f0;
+    cursor: crosshair;
+    border: 1px solid #ccc;
+}
+
+/* Styling the Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 400px;
+    text-align: center;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+    #leftbar, #rightbar {
+        display: none;
+    }
+}
