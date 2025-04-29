@@ -1,213 +1,36 @@
-:root {
-  --primary-color: #3b82f6;
-  --secondary-color: #6366f1;
-  --dark-color: #1e293b;
-  --light-color: #f8fafc;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-}
-
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 20px;
-  background: linear-gradient(135deg, #f9faff 0%, #eef2ff 100%);
-  color: var(--dark-color);
-  min-height: 100vh;
-  line-height: 1.6;
+  background: #f0f0f0;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 30px;
-  padding: 20px 0;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-h1 {
-  color: var(--primary-color);
-  margin-bottom: 10px;
-  font-size: 2.2rem;
-}
-
-.subtitle {
-  color: #64748b;
-  font-size: 1.1rem;
-  margin-top: 0;
-}
-
-/* Code Editor Section */
 .editor-section {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   margin-bottom: 20px;
-}
-
-.language-selector {
-  margin-bottom: 15px;
-}
-
-.language-selector label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.language-selector select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: white;
 }
 
 #codeInput {
   width: 100%;
   height: 300px;
-  font-family: 'Fira Code', 'Courier New', monospace;
-  font-size: 14px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  resize: vertical;
-  background-color: #f8fafc;
-  line-height: 1.5;
-  tab-size: 2;
+  padding: 10px;
+  font-family: monospace;
 }
 
-#codeInput:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-/* Buttons */
-.button-group {
-  display: flex;
-  gap: 12px;
-  margin-top: 15px;
-  flex-wrap: wrap;
+.preview-section iframe {
+  width: 100%;
+  height: 500px;
+  border: 2px solid #333;
+  background: white;
 }
 
 .btn {
   padding: 10px 20px;
+  background: #4CAF50;
+  color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
-
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.save-btn {
-  background-color: var(--success-color);
-  color: white;
-}
-
-.load-btn {
-  background-color: var(--warning-color);
-  color: white;
-}
-
-.generate-btn {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-/* Preview Section */
-.preview-section {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.preview-container {
-  position: relative;
-  margin: 15px 0;
-}
-
-#previewFrame {
-  width: 100%;
-  height: 500px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: white;
-}
-
-/* Download Section */
-.download-section {
-  margin-top: 20px;
-}
-
-.download-options {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.download-btn {
-  padding: 10px 20px;
-  background-color: var(--secondary-color);
-  color: white;
-  border-radius: 6px;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.download-btn:hover {
-  background-color: #4f46e5;
-  transform: translateY(-2px);
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  margin-top: 40px;
-  padding: 20px 0;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  body {
-    padding: 15px;
-  }
-  
-  .button-group, .download-options {
-    flex-direction: column;
-  }
-  
-  .btn, .download-btn {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  #previewFrame {
-    height: 350px;
-  }
-  }
